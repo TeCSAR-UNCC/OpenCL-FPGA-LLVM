@@ -1,0 +1,2 @@
+#./bfs_fpga.exe ../../data/bfs/graph1MW_6.txt
+./bfs_fpga.exe ../../data/bfs/graph4096.txt
