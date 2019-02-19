@@ -1,0 +1,3 @@
+#./lud_fpga.exe filelist.txt -r 5 -lat 30 -lng 90 -t
+
+./lud_fpga.exe -i ./256.dat

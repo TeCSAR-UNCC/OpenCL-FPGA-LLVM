@@ -1,0 +1,67 @@
+Compiler Command: aoc --board de5net_a7 -v --report --profile -D DEPTHSIZE=16 -D COMPUTEUNIT=10 binary/nn_channel.cl -o nn_channel_dep16_cu10.aocx
+=========================================================================================================
+                                   *** Optimization Report ***                                        
+
+Kernels that do not use any work-item built-in functions, such as get_global_id(), are compiled for single
+work-item execution (a task). Otherwise, a kernel is compiled as an ND-Range.
+
+For tasks, the compiler will attempt to pipeline every loop in the kernel to allow multiple iterations of
+the loop to execute concurrently. If some loops are not pipelined, or not pipelined well, you may not get
+good performance.
+
+For ND-Range kernels, the loops are not pipelined. Instead, they are built to accept multiple work-items
+simultaneously. Kernel throughput is usually reduced by the largest total number of iterations of nested
+loops. A large number of threads is usually required to efficiently utilize ND-Range kernels.
+
+=========================================================================================================
+Kernel: NearestNeighbor_read                                                                             
+=========================================================================================================
+The kernel is compiled as an ND-Range.
+
+The kernel was replicated 10 times due to num_compute_units attribute.
+You should have at least three times as many work-groups as the number of compute units
+to efficiently utilize all compute units.
+
+The kernel has a required work-group size of (64, 1, 1).
+
+=========================================================================================================
+Kernel: NearestNeighbor_compute                                                                          
+=========================================================================================================
+The kernel is compiled as an ND-Range.
+
+The kernel was replicated 10 times due to num_compute_units attribute.
+You should have at least three times as many work-groups as the number of compute units
+to efficiently utilize all compute units.
+
+The kernel has a required work-group size of (64, 1, 1).
+
+=========================================================================================================
+Kernel: NearestNeighbor_wb                                                                               
+=========================================================================================================
+The kernel is compiled as an ND-Range.
+
+The kernel was replicated 10 times due to num_compute_units attribute.
+You should have at least three times as many work-groups as the number of compute units
+to efficiently utilize all compute units.
+
+The kernel has a required work-group size of (64, 1, 1).
+
+=========================================================================================================
+
++--------------------------------------------------------------------+
+; Estimated Resource Usage Summary                                   ;
++----------------------------------------+---------------------------+
+; Resource                               + Usage                     ;
++----------------------------------------+---------------------------+
+; Logic utilization                      ;   40%                     ;
+; ALUTs                                  ;   26%                     ;
+; Dedicated logic registers              ;   17%                     ;
+; Memory blocks                          ;   28%                     ;
+; DSP blocks                             ;   16%                     ;
++----------------------------------------+---------------------------;
+System name: nn_channel
+
+Channel Pairing Type Does not match
+Channel c0 needs one chan_read_altera and one chan_write_altera.
+Multiple chan_read_altera/chan_write_altera with the same channel ID may cause this problem.
+system_integrator: custom_ic_impl.cpp:6957: void custom_ic::System::build_channel_system(): Assertion `0' failed.

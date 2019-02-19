@@ -1,0 +1,5 @@
+#./gaussian_fpga.exe ../../data/gaussian/matrix4.txt
+./gaussian_fpga.exe ../../data/gaussian/matrix16.txt
+#./gaussian_fpga.exe../../data/gaussian/matrix208.txt
+#./gaussian_fpga.exe ../../data/gaussian/matrix1024.txt
+#./gaussian_fpga.exe -t -p 0 -d 0 -s 256
