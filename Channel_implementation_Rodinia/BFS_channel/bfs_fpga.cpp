@@ -257,7 +257,7 @@ void run_bfs_gpu(cl_context context,int no_of_nodes, Node *h_graph_nodes, int ed
 
 	cl_event writeEvent,kernelEvent,kernelEvent1,kernelEvent2,kernelEvent3,readEvent;
 
-	double first_stamp=timestamp();
+	double first_stamp=timestamp(); //Put this timer before memory transfer from host to device
 
     error = clEnqueueWriteBuffer(command_queue, d_graph_nodes, CL_TRUE, 0, no_of_nodes*sizeof(Node), h_graph_nodes, 0, NULL, &writeEvent);
     writeTime+=eventTime(writeEvent,command_queue);
@@ -370,7 +370,7 @@ void run_bfs_gpu(cl_context context,int no_of_nodes, Node *h_graph_nodes, int ed
     error = clEnqueueReadBuffer(command_queue2, d_cost, 1, 0, no_of_nodes*sizeof(int), h_cost, 0,NULL,&readEvent);
     cl_errChk(error,"ERROR with clEnqueueReadBuffer",true);
 
-    double second_stamp=timestamp();
+    double second_stamp=timestamp(); //Put this timer after memory transfer from device to host
     double time_elapsed=second_stamp - first_stamp;
     printf("\n Total Kernel execution time=%0.3f ms\n", time_elapsed);
 
