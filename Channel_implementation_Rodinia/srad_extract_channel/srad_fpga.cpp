@@ -3,14 +3,13 @@
 #include <stdlib.h>									// (in path known to compiler)	needed by malloc, free
 #include <CL/opencl.h>		
 #include "clutils.h"
-#include "./main.h"						// (in current path)
-#include "util/graphics/graphics.h"				// (in specified path)
+#include "./main.h"									// (in current path)
+#include "util/graphics/graphics.h"					// (in specified path)
 #include "util/graphics/resize.h"					// (in specified path)
 //#include "srad_fpga.h"
 #include "utils.h"
 #include "./util/opencl/opencl.h"
-//#include "OpenCL.h"
-//#include "clutils_fpga.cpp"
+
 
 cl_context context=NULL;
 //unsigned num_devices = 0;//////////////////////////////////////////////********************************************
@@ -225,15 +224,9 @@ int mem_size;															// matrix memory size
         float writeTime=0, kernel_Time=0, readTime=0;
         cl_program cl_srad_extract_program;
         
-        //cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_channel_emu.aocx",NULL);
-        //printf("I am here$$$$$$$$$ /n");
+
       	cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_channel_fpga.aocx",NULL);
-       	//cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_8.aocx",NULL);
-        //cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_16.aocx",NULL);
-        //cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_32.aocx",NULL);
-		//cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_64.aocx",NULL);
-		//cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_128.aocx",NULL);
-	    //cl_srad_extract_program = cl_compileProgram((char *)"./binary/srad_extract_fpga_256.aocx",NULL);
+
 	       
         extract_kernel_read = clCreateKernel(cl_srad_extract_program, "extract_kernel_read", &status);
         status = cl_errChk(status, (char *)"Error Creating extract_kernel_read",true);
@@ -275,17 +268,10 @@ int mem_size;															// matrix memory size
 
     error = clEnqueueWriteBuffer(command_queue,d_I, 1, 0, mem_size, image, 0, 0,&writeEvent); //Copy the var from hosto to device
     
-//====================================================================================================100
+	//====================================================================================================100
 	// coordinates
 	//====================================================================================================100
 
-	/*error = clEnqueueWriteBuffer(command_queue, d_iN, 1, 0, mem_size_i, iN, 0, 0, &writeEvent);
-	
-	error = clEnqueueWriteBuffer(command_queue, d_iS, 1, 0, mem_size_i, iS, 0, 0, &writeEvent);
-	
-	error = clEnqueueWriteBuffer(command_queue, d_jE, 1, 0, mem_size_j, jE, 0, 0, &writeEvent);
-	
-	error = clEnqueueWriteBuffer(command_queue, d_jW, 1, 0, mem_size_j, jW, 0, 0, &writeEvent);*/
 	
 	
 	//====================================================================================================100
@@ -302,19 +288,13 @@ int mem_size;															// matrix memory size
 //**************************************App-specific read kernel init and call ********************
     // 3. send arguments to device
     cl_int argchk;
-    //argchk  = clSetKernelArg(extract_kernel_read, 0, sizeof(long), (void *) &Ne);
     argchk  = clSetKernelArg(extract_kernel_read, 0, sizeof(cl_mem), (void *) &d_I);
-   //printf("Read kernel Starts\n");
-    //printf("Extract_read kernel Starts\n");
-
-    //cl_errChk(argchk,"ERROR in Setting Nearest Neighbor_read kernel args",true);
+    //printf("Read kernel Starts\n");
     cl_errChk(argchk,"ERROR in Setting Extract_read kernel args",true);
 
 // 4. enqueue kernel
     error = clEnqueueNDRangeKernel(command_queue,extract_kernel_read, 1, NULL, global_work_size, local_work_size, 0, NULL, &kernelEvent);
-	//cl_errChk(error,"ERROR in Executing Kernel NearestNeighbor_read",true);
 	//printf("Read kernel Executes\n");
-	
 	cl_errChk(error,"ERROR in Executing Extract kernel",true);
 	//printf("Extract kernel read Executes\n");
 	
@@ -324,8 +304,7 @@ int mem_size;															// matrix memory size
 
 //**************************************App-specific comp kernel init and call **************
     argchk  = clSetKernelArg(extract_kernel_compute, 0, sizeof(long), (void *) &Ne);
-    //argchk  = clSetKernelArg(extract_kernel_compute, 1, sizeof(cl_mem), (void *) &d_I);
-	//printf("Compute kernel Starts\n");
+  	//printf("Compute kernel Starts\n");
     cl_errChk(argchk,"ERROR in Setting Extract_compute kernel args",true);
 
     error = clEnqueueNDRangeKernel(command_queue1,extract_kernel_compute, 1, NULL, global_work_size, local_work_size, 0, NULL, &kernelEvent1);
@@ -337,9 +316,7 @@ int mem_size;															// matrix memory size
 
 
 //**************************************App-specific write kernel init and call **************
-	//argchk  = clSetKernelArg(extract_kernel_wb, 0, sizeof(long), (void *) &Ne);
-    argchk  = clSetKernelArg(extract_kernel_wb, 0, sizeof(cl_mem), (void *) &d_I);
-
+	argchk  = clSetKernelArg(extract_kernel_wb, 0, sizeof(cl_mem), (void *) &d_I);
     //printf("Writeback kernel Starts\n");
     cl_errChk(argchk,"ERROR in Setting Extract_wb kernel args",true);
     error = clEnqueueNDRangeKernel(command_queue2,extract_kernel_wb, 1, NULL, global_work_size, local_work_size, 0, NULL, &kernelEvent2);
@@ -358,7 +335,7 @@ int mem_size;															// matrix memory size
     status = clFinish(command_queue2);
     error = clEnqueueReadBuffer( command_queue2,d_I, CL_TRUE, 0, mem_size, image, 0, NULL,&readEvent);
     readTime+=eventTime(readEvent,command_queue2);
-        //status = clFinish(command_queue2);
+    
 	//printf("Read final results from Device\n");
     cl_errChk(error,"ERROR with clEnqueueReadBuffer",true);
 //************************************** END ******************************************************    
@@ -383,28 +360,7 @@ int mem_size;															// matrix memory size
 //**************************************App-specific clear device mem **************
     error = clReleaseMemObject(d_I);
 	
-/*	error = clReleaseMemObject(d_c);
-	
-	error = clReleaseMemObject(d_iN);
-	
-	error = clReleaseMemObject(d_iS);
-	
-	error = clReleaseMemObject(d_jE);
-	
-	error = clReleaseMemObject(d_jW);
-	
-	error = clReleaseMemObject(d_dN);
-	
-	error = clReleaseMemObject(d_dS);
-	
-	error = clReleaseMemObject(d_dE);
-	
-	error = clReleaseMemObject(d_dW);
-	
-	error = clReleaseMemObject(d_sums);
-	
-	error = clReleaseMemObject(d_sums2);*/
-		
+
 	//************************************** END ****************************************************** 
 }
 

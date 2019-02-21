@@ -77,25 +77,17 @@ float *OpenClFindNearestNeighbors(
         cl_int status;
         cl_program cl_NN_program;
         cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_base_fpga.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_4.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_8.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_16.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_32.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_64.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_128.aocx",NULL);
-        //cl_NN_program = cl_compileProgram((char *)"./binary/nn_channel_256.aocx",NULL);
-	       
+        	       
         NN_kernel_read = clCreateKernel(cl_NN_program, "NearestNeighbor_read", &status);
         status = cl_errChk(status, (char *)"Error Creating Nearest Neighbor kernel_read",true);
         if(status)exit(1);
 
-		NN_kernel_compute = clCreateKernel(cl_NN_program, "NearestNeighbor_compute", &status);
+		    NN_kernel_compute = clCreateKernel(cl_NN_program, "NearestNeighbor_compute", &status);
         status = cl_errChk(status, (char *)"Error Creating Nearest Neighbor kernel_compute",true);
         if(status)exit(1);
         
                            
-		NN_kernel_wb = clCreateKernel(cl_NN_program, "NearestNeighbor_wb", &status);
+		    NN_kernel_wb = clCreateKernel(cl_NN_program, "NearestNeighbor_wb", &status);
         status = cl_errChk(status, (char *)"Error Creating Nearest Neighbor kernel_wb",true);
         if(status)exit(1);
 //**********************************************END*************************************************88
@@ -164,7 +156,7 @@ float *OpenClFindNearestNeighbors(
 
 
 //**************************************App-specific write kernel init and call **************
-	argchk = clSetKernelArg(NN_kernel_wb, 0, sizeof(cl_mem), (void *)&d_distances);
+	  argchk = clSetKernelArg(NN_kernel_wb, 0, sizeof(cl_mem), (void *)&d_distances);
 
    // printf("Writeback kernel Starts\n");
     cl_errChk(argchk,"ERROR in Setting Nearest Neighbor_WB kernel args",true);

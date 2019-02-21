@@ -1116,7 +1116,7 @@ void kernel_gpu_opencl_wrapper(cl_context context, record *records, long records
 	cl_command_queue command_queue2 = cl_getCommandQueue2();
 	cl_event writeEvent,kernelEvent,readEvent;
 
-	const double first_stamp=timestamp();
+	const double first_stamp=timestamp(); //Put this timer before memory transfer from host to device
     
     error = clEnqueueWriteBuffer(command_queue,recordsD,1,0,records_mem,records,0,NULL,&writeEvent);
     error = clEnqueueWriteBuffer(command_queue,knodesD,1,0,knodes_mem,knodes,0,NULL,&writeEvent);
@@ -1177,11 +1177,11 @@ void kernel_gpu_opencl_wrapper(cl_context context, record *records, long records
 	// 5. transfer data off of device
     error = clEnqueueReadBuffer(command_queue2,ansD,CL_TRUE,0,count*sizeof(record),ans,0,NULL,&readEvent);
 	
-	const double second_stamp=timestamp();
+		const double second_stamp=timestamp(); //Put this timer after memory transfer from device to host
     const double time_elapsed=second_stamp - first_stamp;
     printf("\n Total Kernel execution time=%0.3f ms\n", time_elapsed);
 
-    clReleaseMemObject(recordsD);
+  clReleaseMemObject(recordsD);
 	clReleaseMemObject(knodesD);
 	clReleaseMemObject(currKnodeD);
 	clReleaseMemObject(offsetD);

@@ -184,7 +184,7 @@ void run_hotspot_gpu(cl_context context, int col, int row, int total_iterations,
     
 //////////////////////////////////////////////////////////////////////////////////////////////////////////READ STARTS/////
 
-	long long start_time = get_time();
+	long long start_time = get_time(); //Put this timer before memory transfer from host to device
     //printf("num_iterations = %d\n",num_iterations);
     cl_int argchk;
     for (t = 0; t < total_iterations; t += num_iterations) {
@@ -248,7 +248,7 @@ void run_hotspot_gpu(cl_context context, int col, int row, int total_iterations,
 		//error = clFinish(command_queue);
 	//printf("I am here1\n");
     cl_errChk(error,"ERROR in Finishing command queue",true);
-    long long end_time = get_time();
+    long long end_time = get_time();   //Put this timer before memory transfer from device to host
     long long total_time = (end_time - start_time);
     printf("\nKernel time: %.3f seconds\n", ((float) total_time) / (1000*1000));
     cl_float *MatrixOut = (cl_float *) clEnqueueMapBuffer(command_queue2, MatrixTemp[src], CL_TRUE, CL_MAP_READ, 0, sizeof(float) * size, 0, NULL, NULL, &error);

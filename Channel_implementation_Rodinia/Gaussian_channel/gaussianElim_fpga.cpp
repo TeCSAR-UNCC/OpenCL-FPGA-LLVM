@@ -295,7 +295,7 @@ void ForwardSub(cl_context context,float *a, float *b, float *m, int size) {
 	cl_command_queue command_queue2 = cl_getCommandQueue2();
 	cl_event writeEvent,kernelEvent,kernelEvent1,kernelEvent2,kernelEvent3,readEvent;
 
-    const double first_stamp=timestamp();
+    const double first_stamp=timestamp(); //Put this timer before memory transfer from host to device
 
     error = clEnqueueWriteBuffer(command_queue,a_dev,1,0,sizeof(float)*size*size,a,0, NULL,&writeEvent);
     writeTime+=eventTime(writeEvent,command_queue);
@@ -386,7 +386,7 @@ void ForwardSub(cl_context context,float *a, float *b, float *m, int size) {
 	//printf("Read final results from Device\n");
     cl_errChk(error,"ERROR with clEnqueueReadBuffer",true);
 
-    const double second_stamp=timestamp();
+    const double second_stamp=timestamp(); //Put this timer after memory transfer from device to host
     const double time_elapsed=second_stamp - first_stamp;
     printf("\n Total Kernel execution time=%0.3f ms\n", time_elapsed);
 
